@@ -29,5 +29,5 @@ fun Visit.nextFrameOrPause(framesPerAct: Int = 3): Visit {
 }
 
 fun Visit.withFrameDelta(delta: Map<String, Float>): Visit = copy(
-    stateVector = stateVector.applyDelta(delta)
+    stateVector = stateVector.update(delta)
 )
