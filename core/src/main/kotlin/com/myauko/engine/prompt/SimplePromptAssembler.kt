@@ -62,7 +62,7 @@ class SimplePromptAssembler : PromptAssembler {
         frame: Frame,
         visit: Visit,
         activeModule: Module,
-        playerCommand: String? = null
+        playerCommand: String?
     ): String {
         val request = PromptBuildRequest(
             visit = visit,
