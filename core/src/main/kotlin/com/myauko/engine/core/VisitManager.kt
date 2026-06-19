@@ -3,13 +3,9 @@ package com.myauko.engine.core
 import com.myauko.engine.model.*
 import com.myauko.engine.prompt.PromptAssembler
 
-/**
- * Управляет жизненным циклом визита.
- */
 class VisitManager(
     private val promptAssembler: PromptAssembler
 ) {
-
     private var currentVisit: Visit? = null
 
     fun startVisit(module: Module, npcId: String, bodyDNA: BodyDNA): Visit {
@@ -25,19 +21,17 @@ class VisitManager(
 
     fun getCurrentVisit(): Visit? = currentVisit
 
+    fun advanceToNextFrame(playerCommand: String? = null): String? = advanceFrame(playerCommand)
+
     fun advanceFrame(playerCommand: String? = null): String? {
         val visit = currentVisit ?: return null
-
-        // TODO: Логика перехода по кадрам и актам
-
         val frame = Frame(
             id = "frame_${visit.currentAct}_${visit.currentFrame}",
             actNumber = visit.currentAct,
             frameNumber = visit.currentFrame,
-            baseDescription = "Базовое описание кадра"
+            baseDescription = "Frame"
         )
-
-        val prompt = promptAssembler.assembleForFrame(
+        return promptAssembler.assembleForFrame(
             frame = frame,
             visit = visit,
             activeModule = Module(
@@ -49,10 +43,6 @@ class VisitManager(
             ),
             playerCommand = playerCommand
         )
-
-        // TODO: Отправить prompt в API и получить изображение
-
-        return prompt // временно возвращаем prompt
     }
 
     fun updateState(updates: Map<String, Float>) {
