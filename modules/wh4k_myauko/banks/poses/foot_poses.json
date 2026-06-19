@@ -3,20 +3,32 @@
     {
       "id": "foot_arch_high",
       "name": "High Arch Presentation",
-      "description": "Standing on tiptoes, elegant high arches, soles prominently displayed, legs slightly apart",
-      "tags": ["foot_focus", "high_arches", "standing", "elegant"]
+      "description": "Standing on tiptoes, elegant high arches, soles prominently displayed, legs slightly apart, confident pose",
+      "tags": ["foot_focus", "high_arches", "standing", "elegant", "dominant"]
     },
     {
       "id": "foot_sole_closeup",
       "name": "Sole Close-up Worship",
-      "description": "Lying on back with feet raised toward viewer, detailed soles and toes in focus, vulnerable and inviting pose",
-      "tags": ["foot_focus", "sole", "closeup", "worship"]
+      "description": "Lying on back with feet raised toward viewer, detailed soles and toes in sharp focus, vulnerable and inviting",
+      "tags": ["foot_focus", "sole", "closeup", "worship", "submissive"]
     },
     {
       "id": "foot_crossed_legs",
       "name": "Crossed Legs Tease",
-      "description": "Sitting with legs elegantly crossed, one foot dangling, showing both top and sole subtly",
-      "tags": ["foot_focus", "tease", "sitting", "elegant"]
+      "description": "Sitting with legs elegantly crossed, one foot dangling and flexing, showing both top of foot and hint of sole",
+      "tags": ["foot_focus", "tease", "sitting", "elegant", "playful"]
+    },
+    {
+      "id": "foot_on_lap",
+      "name": "Foot on Lap / Body Worship",
+      "description": "One foot resting on partner's lap or chest, toes flexing, full leg and foot in focus, intimate and controlling",
+      "tags": ["foot_focus", "worship", "lap", "intimate", "controlling"]
+    },
+    {
+      "id": "foot_job_position",
+      "name": "Footjob Ready Pose",
+      "description": "Lying on stomach or side, feet brought together toward viewer, soles facing forward, explicit and ready pose",
+      "tags": ["foot_focus", "explicit", "footjob", "direct"]
     }
   ]
 }
