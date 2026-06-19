@@ -1,4 +1,11 @@
 {
-  "comment": "Банк персонажей модуля. Заполни реальными данными.",
-  "characters": []
+  "characters": [
+    {
+      "id": "myauko_default",
+      "name": "Myauko",
+      "description": "Mature, elegant woman with athletic build, long dark hair, intense eyes, fair skin with subtle scars, confident and sensual presence",
+      "faction": "commissariat",
+      "traits": ["mature", "athletic", "confident", "foot_focus_friendly"]
+    }
+  ]
 }

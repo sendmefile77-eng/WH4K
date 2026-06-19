@@ -1,4 +1,22 @@
 {
-  "comment": "Банк поз с фокусом на фут-фетиш. Заполни свои 80+ семейств поз.",
-  "poses": []
+  "poses": [
+    {
+      "id": "foot_arch_high",
+      "name": "High Arch Presentation",
+      "description": "Standing on tiptoes, elegant high arches, soles prominently displayed, legs slightly apart",
+      "tags": ["foot_focus", "high_arches", "standing", "elegant"]
+    },
+    {
+      "id": "foot_sole_closeup",
+      "name": "Sole Close-up Worship",
+      "description": "Lying on back with feet raised toward viewer, detailed soles and toes in focus, vulnerable and inviting pose",
+      "tags": ["foot_focus", "sole", "closeup", "worship"]
+    },
+    {
+      "id": "foot_crossed_legs",
+      "name": "Crossed Legs Tease",
+      "description": "Sitting with legs elegantly crossed, one foot dangling, showing both top and sole subtly",
+      "tags": ["foot_focus", "tease", "sitting", "elegant"]
+    }
+  ]
 }
