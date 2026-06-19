@@ -1,5 +1,6 @@
 package com.myauko.engine.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,7 +11,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun VisitScreen(navController: NavController) {
-    var currentPrompt by remember { mutableStateOf("Промпт кадра...") }
+    var currentPrompt by remember { mutableStateOf("Prompt frame placeholder") }
 
     Column(
         modifier = Modifier
@@ -21,14 +22,13 @@ fun VisitScreen(navController: NavController) {
         Text("Visit Screen (Act X / Frame Y)", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(24.dp))
 
-        // Заглушка изображения
         Box(
             modifier = Modifier
                 .size(280.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            Text("Изображение кадра")
+            Text("Frame image placeholder")
         }
 
         Spacer(Modifier.height(16.dp))
@@ -38,11 +38,11 @@ fun VisitScreen(navController: NavController) {
         Spacer(Modifier.height(24.dp))
 
         Row {
-            Button(onClick = { /* TODO: Регенерировать */ }) {
+            Button(onClick = { currentPrompt = "Regenerate placeholder" }) {
                 Text("Regenerate")
             }
             Spacer(Modifier.width(12.dp))
-            Button(onClick = { /* TODO: Следующий кадр */ }) {
+            Button(onClick = { currentPrompt = "Next frame placeholder" }) {
                 Text("Next Frame")
             }
         }
