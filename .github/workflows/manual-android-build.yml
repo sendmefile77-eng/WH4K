@@ -44,15 +44,13 @@ jobs:
         run: |
           sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Set up Gradle 8.7 (with clean cache option)
+      - name: Set up Gradle 8.7
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.7"
-          cache-read-only: false
 
-      - name: Build debug APK (clean)
-        run: |
-          ./gradlew clean :app:assembleDebug --no-daemon --stacktrace || gradle :app:assembleDebug --no-daemon --stacktrace
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
 
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
