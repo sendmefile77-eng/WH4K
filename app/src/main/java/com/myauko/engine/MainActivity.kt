@@ -1,8 +1,11 @@
 package com.myauko.engine
 
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,14 +31,20 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.myauko.engine.core.aihorde.AiHordeProvider
+import com.myauko.engine.core.image.ImageGenerationRequest
 import com.myauko.engine.core.prompt.PromptAssembler
 import com.myauko.engine.core.prompt.PromptRequest
 import com.myauko.engine.core.state.GameState
 import com.myauko.engine.ui.theme.MyaukoEngineTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +64,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GameScreen(modifier: Modifier = Modifier) {
+    val scope = rememberCoroutineScope()
     val baseState = remember { GameState.newGame() }
+    val provider = remember { AiHordeProvider() }
 
     var screen by remember { mutableStateOf("Hub") }
     var active by remember { mutableStateOf(false) }
@@ -68,6 +79,10 @@ fun GameScreen(modifier: Modifier = Modifier) {
     var score by remember { mutableIntStateOf(0) }
     var ending by remember { mutableStateOf("") }
     var sceneText by remember { mutableStateOf("Press Start to begin a run.") }
+    var frameCard by remember { mutableStateOf("No frame rendered yet.") }
+    var imageStatus by remember { mutableStateOf("No image generated yet.") }
+    var imageData by remember { mutableStateOf<String?>(null) }
+    var generating by remember { mutableStateOf(false) }
 
     val log = remember { mutableStateListOf("Loaded") }
 
@@ -78,6 +93,9 @@ fun GameScreen(modifier: Modifier = Modifier) {
 
     fun setScene(value: String) {
         sceneText = value
+        frameCard = "$zone / frame $frame / focus $focus / heat $heat"
+        imageData = null
+        imageStatus = "No image for this frame yet."
         record(value)
     }
 
@@ -107,7 +125,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
         checkEnd()
     }
 
-    val prompt = remember(frame, zone, hp, focus, heat, score) {
+    val promptResult = remember(frame, zone, hp, focus, heat, score, module) {
         PromptAssembler().assemble(
             PromptRequest(
                 gameState = baseState.copy(
@@ -117,7 +135,14 @@ fun GameScreen(modifier: Modifier = Modifier) {
                 playerCommand = "zone $zone frame $frame hp $hp focus $focus heat $heat score $score",
                 moduleStyleTags = listOf("cinematic", "gothic architecture")
             )
-        ).positivePrompt
+        )
+    }
+
+    fun normalizeImageData(raw: String): String {
+        return raw
+            .removePrefix("data:image/png;base64,")
+            .removePrefix("data:image/jpeg;base64,")
+            .removePrefix("data:image/webp;base64,")
     }
 
     Column(
@@ -201,6 +226,72 @@ fun GameScreen(modifier: Modifier = Modifier) {
                     "Scene" -> {
                         Text(sceneText)
                         Spacer(Modifier.height(4.dp))
+                        Text("Frame card", fontWeight = FontWeight.Bold)
+                        Text(frameCard)
+
+                        Spacer(Modifier.height(6.dp))
+                        Text("Image", fontWeight = FontWeight.Bold)
+                        Text(imageStatus)
+
+                        val imageBase64 = imageData
+                        if (imageBase64 != null) {
+                            val bytes = remember(imageBase64) {
+                                Base64.decode(normalizeImageData(imageBase64), Base64.DEFAULT)
+                            }
+                            val bitmap = remember(bytes) {
+                                BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+                            }
+                            if (bitmap != null) {
+                                Image(
+                                    bitmap = bitmap.asImageBitmap(),
+                                    contentDescription = "Generated frame",
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+
+                        Button(
+                            enabled = !generating && active,
+                            onClick = {
+                                scope.launch {
+                                    generating = true
+                                    imageStatus = "Submitting image request..."
+                                    try {
+                                        val request = ImageGenerationRequest(
+                                            prompt = promptResult,
+                                            width = 512,
+                                            height = 768,
+                                            steps = 24,
+                                            guidanceScale = 7.0f,
+                                            allowAdultFictionalContent = true
+                                        )
+                                        val queued = provider.generate(request)
+                                        imageStatus = "Queued: ${queued.id}"
+
+                                        repeat(40) {
+                                            delay(3000)
+                                            val status = provider.status(queued.id)
+                                            val img = status.generations.firstOrNull()?.img
+                                            if (!img.isNullOrBlank()) {
+                                                imageData = img
+                                                imageStatus = "Image ready."
+                                                generating = false
+                                                return@launch
+                                            }
+                                            imageStatus = "Waiting... jobs: ${status.waiting}, processing: ${status.processing}"
+                                        }
+
+                                        imageStatus = "Still queued. Try again later."
+                                    } catch (e: Exception) {
+                                        imageStatus = "Image error: ${e.message ?: "unknown"}"
+                                    } finally {
+                                        generating = false
+                                    }
+                                }
+                            }
+                        ) { Text(if (generating) "Generating..." else "Generate image") }
+
+                        Spacer(Modifier.height(4.dp))
                         Text("Actions", fontWeight = FontWeight.Bold)
 
                         Button(onClick = {
@@ -214,10 +305,6 @@ fun GameScreen(modifier: Modifier = Modifier) {
                         Button(onClick = {
                             nextFrame("Hold position. You recover HP and reduce heat.", hpDelta = 1, focusDelta = 0, heatDelta = -2, scoreDelta = 0)
                         }) { Text("Hold position") }
-
-                        Spacer(Modifier.height(6.dp))
-                        Text("Visual prompt", fontWeight = FontWeight.Bold)
-                        Text(prompt)
                     }
 
                     "Map" -> {
@@ -258,7 +345,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
                             record("Module selected: test.citadel")
                         }) { Text("test.citadel") }
 
-                        Text("Image generation will be connected after the playable loop.")
+                        Text("AI Horde anonymous mode is used by default.")
                     }
 
                     "Log" -> {
@@ -288,6 +375,6 @@ fun GameScreen(modifier: Modifier = Modifier) {
             }
         }
 
-        Text("Build v0.5")
+        Text("Build v0.7")
     }
 }
