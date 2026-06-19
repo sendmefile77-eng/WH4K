@@ -6,33 +6,12 @@ import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
@@ -83,6 +62,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
     var imageStatus by remember { mutableStateOf("No image generated yet.") }
     var imageData by remember { mutableStateOf<String?>(null) }
     var generating by remember { mutableStateOf(false) }
+    var commandInput by remember { mutableStateOf("") }
 
     val log = remember { mutableStateListOf("Loaded") }
 
@@ -113,7 +93,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
         }
     }
 
-    fun nextFrame(action: String, hpDelta: Int, focusDelta: Int, heatDelta: Int, scoreDelta: Int) {
+    fun nextFrame(action: String, hpDelta: Int, focusDelta: Int, heatDelta: Int, scoreDelta: Int, command: String? = null) {
         if (!active) return
         frame += 1
         hp = (hp + hpDelta).coerceIn(0, 12)
@@ -125,14 +105,15 @@ fun GameScreen(modifier: Modifier = Modifier) {
         checkEnd()
     }
 
-    val promptResult = remember(frame, zone, hp, focus, heat, score, module) {
+    val promptResult = remember(frame, zone, hp, focus, heat, score, module, commandInput) {
+        val effectiveCommand = if (commandInput.isNotBlank()) commandInput else "zone $zone frame $frame hp $hp focus $focus heat $heat score $score"
         PromptAssembler().assemble(
             PromptRequest(
                 gameState = baseState.copy(
                     activeModuleId = module,
                     visitProgress = baseState.visitProgress.copy(frameIndex = frame)
                 ),
-                playerCommand = "zone $zone frame $frame hp $hp focus $focus heat $heat score $score",
+                playerCommand = effectiveCommand,
                 moduleStyleTags = listOf("cinematic", "gothic architecture")
             )
         )
@@ -143,7 +124,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
             .removePrefix("data:image/png;base64,")
             .removePrefix("data:image/jpeg;base64,")
             .removePrefix("data:image/webp;base64,")
-    }
+        }
 
     Column(
         modifier = modifier
@@ -189,6 +170,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
                 focus = 4
                 heat = 0
                 score = 0
+                commandInput = ""
                 setScene("Frame 1: You enter the first zone.")
             }) { Text("Start") }
 
@@ -210,8 +192,22 @@ fun GameScreen(modifier: Modifier = Modifier) {
             }) { Text("Settings") }
 
             OutlinedButton(onClick = {
-                nextFrame("Prepared next frame", hpDelta = 0, focusDelta = 0, heatDelta = 1, scoreDelta = 1)
+                nextFrame("Prepared next frame", 0, 0, 1, 1, commandInput)
+                commandInput = ""
             }) { Text("Next") }
+        }
+
+        // Command input field
+        if (screen == "Scene" && active) {
+            OutlinedTextField(
+                value = commandInput,
+                onValueChange = { commandInput = it },
+                label = { Text("Player command (e.g. more foot focus, between breasts, worship)") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                placeholder = { Text("Type command to influence the scene...") }
+            )
+            Spacer(Modifier.height(8.dp))
         }
 
         Card(modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(18.dp)) {
@@ -295,15 +291,18 @@ fun GameScreen(modifier: Modifier = Modifier) {
                         Text("Actions", fontWeight = FontWeight.Bold)
 
                         Button(onClick = {
-                            nextFrame("Careful search. You gain score and focus.", hpDelta = 0, focusDelta = 1, heatDelta = 1, scoreDelta = 2)
+                            nextFrame("Careful search. You gain score and focus.", 0, 1, 1, 2, commandInput)
+                            commandInput = ""
                         }) { Text("Careful search") }
 
                         Button(onClick = {
-                            nextFrame("Fast advance. You gain more score but lose HP.", hpDelta = -1, focusDelta = 0, heatDelta = 2, scoreDelta = 4)
+                            nextFrame("Fast advance. You gain more score but lose HP.", -1, 0, 2, 4, commandInput)
+                            commandInput = ""
                         }) { Text("Fast advance") }
 
                         Button(onClick = {
-                            nextFrame("Hold position. You recover HP and reduce heat.", hpDelta = 1, focusDelta = 0, heatDelta = -2, scoreDelta = 0)
+                            nextFrame("Hold position. You recover HP and reduce heat.", 1, 0, -2, 0, commandInput)
+                            commandInput = ""
                         }) { Text("Hold position") }
                     }
 
@@ -363,6 +362,7 @@ fun GameScreen(modifier: Modifier = Modifier) {
                             focus = 4
                             heat = 0
                             score = 0
+                            commandInput = ""
                             setScene("New run started.")
                         }) { Text("Restart") }
                     }
