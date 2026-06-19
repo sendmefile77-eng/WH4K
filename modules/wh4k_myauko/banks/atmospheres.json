@@ -1,4 +1,14 @@
 {
-  "comment": "Банк атмосфер. Заполни реальными данными.",
-  "atmospheres": []
+  "atmospheres": [
+    {
+      "id": "private_cabin_dim",
+      "name": "Dimly Lit Private Cabin",
+      "description": "Small, private cabin with red emergency lighting, heavy metal bulkheads, soft hum of life support systems, intimate and slightly claustrophobic atmosphere"
+    },
+    {
+      "id": "cabin_tension",
+      "name": "Tension and Anticipation",
+      "description": "Thick atmosphere of power imbalance and sexual tension, dim lights, the sound of distant machinery, elegant yet dangerous mood"
+    }
+  ]
 }
