@@ -11,11 +11,15 @@ class VisitViewModel(
     val currentVisit: Visit?
         get() = visitManager.getCurrentVisit()
 
-    fun advanceFrame(command: String? = null): String? {
+    fun advanceFrame(command: String? = null): String {
         return visitManager.advanceToNextFrame(command)
     }
 
     fun updateState(updates: Map<String, Float>) {
         visitManager.updateState(updates)
+    }
+
+    fun getCurrentActAndFrame(): Pair<Int, Int> {
+        return visitManager.getCurrentActAndFrame()
     }
 }
