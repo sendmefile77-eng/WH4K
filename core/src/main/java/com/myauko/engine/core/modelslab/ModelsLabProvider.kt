@@ -66,7 +66,7 @@ private fun ImageGenerationRequest.toModelsLabRequest(apiKey: String): ModelsLab
         samples = "1",
         numInferenceSteps = steps.toString(),
         guidanceScale = guidanceScale,
-        modelId = modelId,
+        modelId = modelId ?: "sdxl",
         safetyChecker = if (safetyChecker) "yes" else "no",
         seed = prompt.seedHint.hashCode().toString()
     )
