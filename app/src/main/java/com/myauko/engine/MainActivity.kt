@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -135,6 +136,14 @@ fun GameScreen(modifier: Modifier = Modifier) {
     ) {
         Text("WH4K", style = MaterialTheme.typography.displaySmall, fontWeight = FontWeight.Bold)
         Text("Myauko Engine playable build", style = MaterialTheme.typography.titleMedium)
+
+        // VERY OBVIOUS MARKER - if you see this, the new build is running
+        Text(
+            "[COMMAND INPUT ACTIVE - v3 - 19.06.2026]",
+            color = Color.Red,
+            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.bodyLarge
+        )
 
         Card(
             modifier = Modifier.fillMaxWidth(),
