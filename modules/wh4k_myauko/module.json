@@ -1,0 +1,40 @@
+{
+  "id": "wh4k.myauko",
+  "name": "Мяуко — Основной модуль",
+  "version": "0.2.0",
+  "minEngineVersion": "0.1.0",
+  "contentRating": "ADULT_ONLY",
+  "description": "Основной модуль для взрослой grimdark эротической RPG в сеттинге Warhammer 40,000. Фокус на Мяуко, комиссарских сценариях, фут-фетише и детальной эротике.",
+  "styleDescription": "sensual adult comic realism, grimdark WH40K aesthetic, hyper-detailed anatomy, gothic sci-fi erotic",
+  "directions": [
+    {
+      "id": "cabin_company",
+      "title": "Визит в кают-компанию",
+      "description": "Классический сценарий посещения Мяуко в каюте.",
+      "showcasePromptKey": "showcase.cabin_company",
+      "visitScriptKey": "visit.cabin_company"
+    }
+  ],
+  "banks": {
+    "factions": "banks/factions/",
+    "poses": "banks/poses/",
+    "characters": "banks/characters.json",
+    "locations": "banks/locations.json",
+    "atmospheres": "banks/atmospheres.json",
+    "bodyDnaTemplates": "banks/body_dna_templates.json"
+  },
+  "promptPacks": {
+    "core": "prompts/core.json",
+    "visit": "prompts/visit.json",
+    "showcase": "prompts/showcase.json"
+  },
+  "menus": {
+    "directions": "menus/directions.json"
+  },
+  "safety": {
+    "requiresAdultCharacters": true,
+    "disallowMinors": true,
+    "disallowRealPersonLikeness": true,
+    "disallowIllegalContent": true
+  }
+}
