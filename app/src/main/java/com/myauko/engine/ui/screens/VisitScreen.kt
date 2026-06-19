@@ -14,20 +14,23 @@ import com.myauko.engine.viewmodel.VisitViewModel
 @Composable
 fun VisitScreen(
     navController: NavController,
-    viewModel: VisitViewModel? = null
+    viewModel: VisitViewModel
 ) {
-    var currentPrompt by remember { mutableStateOf("Visit started. Generating first frame...") }
+    var currentPrompt by remember { mutableStateOf("Visit started...") }
     var actFrameText by remember { mutableStateOf("Act 1 / Frame 1") }
-    var hasStarted by remember { mutableStateOf(false) }
+    var visitStarted by remember { mutableStateOf(false) }
 
-    // Auto-start visit on first composition (demo mode)
+    // Auto-start the visit when screen opens
     LaunchedEffect(Unit) {
-        if (!hasStarted) {
-            // In real version this should come from selected module + NPC
-            // For now we just trigger first frame
-            val firstPrompt = viewModel?.advanceFrame() ?: "Demo mode: No ViewModel connected yet"
+        if (!visitStarted) {
+            // Start a demo visit (in real version this will come from module selection)
+            val firstPrompt = viewModel.advanceFrame()
             currentPrompt = firstPrompt
-            hasStarted = true
+            visitStarted = true
+            
+            // Update act/frame display
+            val (act, frame) = viewModel.getCurrentActAndFrame()
+            actFrameText = "Act $act / Frame $frame"
         }
     }
 
@@ -42,13 +45,18 @@ fun VisitScreen(
 
         Spacer(Modifier.height(20.dp))
 
+        // Image area
         Box(
             modifier = Modifier
                 .size(320.dp)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
-            Text("[ Image Placeholder ]\n\nImage generation will be connected here", color = MaterialTheme.colorScheme.outline)
+            Text(
+                "[ Image will be generated here ]\n\n(Perchance / ModelsLab integration later)",
+                color = MaterialTheme.colorScheme.outline,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+            )
         }
 
         Spacer(Modifier.height(16.dp))
@@ -68,9 +76,11 @@ fun VisitScreen(
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
             Button(onClick = {
-                val newPrompt = viewModel?.advanceFrame("more foot focus") ?: "Next frame (demo)"
+                val newPrompt = viewModel.advanceFrame("more foot focus")
                 currentPrompt = newPrompt
-                actFrameText = "Act ? / Frame ? (updated)"
+
+                val (act, frame) = viewModel.getCurrentActAndFrame()
+                actFrameText = "Act $act / Frame $frame"
             }) {
                 Text("Next Frame")
             }
@@ -80,9 +90,10 @@ fun VisitScreen(
             }
         }
 
-        Spacer(Modifier.height(20.dp))
+        Spacer(Modifier.height(16.dp))
+
         Text(
-            text = "Demo mode — Full data + DI coming next",
+            text = "Demo mode — wh4k_myauko module active",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.outline
         )
