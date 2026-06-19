@@ -1,6 +1,6 @@
 # WH4K Manual Build
 
-This repository is intentionally configured for manual local builds only. There is no CI workflow and no automatic release pipeline yet.
+This repository is configured for manual builds only. There is no automatic build on push or pull request.
 
 ## What is included now
 
@@ -9,10 +9,48 @@ This repository is intentionally configured for manual local builds only. There 
 - Compose preview screen connected to core state and prompt assembly.
 - ModelsLab image provider layer added in code, but API key is not configured yet.
 - Example module manifest: `modules/example_grimdark/module.json`.
+- Manual GitHub Actions workflow: `.github/workflows/manual-android-build.yml`.
 
-## Requirements
+## Build in GitHub web version
 
-Install locally:
+Use this if you do not have Android Studio locally.
+
+1. Open the repository on GitHub.
+2. Go to the **Actions** tab.
+3. In the left sidebar, choose **Manual Android Build**.
+4. Click **Run workflow**.
+5. Keep branch as `main`.
+6. Click the green **Run workflow** button.
+7. Open the started workflow run and wait until it finishes.
+8. At the bottom of the run page, download the artifact named:
+
+   ```text
+   wh4k-debug-apk
+   ```
+
+9. Unzip the artifact. The APK inside should be the debug build.
+
+The workflow does not run automatically. It only runs when you press **Run workflow** manually.
+
+## What the workflow does
+
+The manual workflow:
+
+1. checks out the repository;
+2. installs JDK 17;
+3. installs Android SDK packages for API 35;
+4. sets up Gradle 8.7;
+5. runs:
+
+   ```bash
+   gradle :app:assembleDebug --no-daemon --stacktrace
+   ```
+
+6. uploads the debug APK as a GitHub Actions artifact.
+
+## Local requirements
+
+Install locally only if you want to build outside GitHub:
 
 1. Android Studio Ladybug or newer.
 2. JDK 17.
@@ -92,6 +130,16 @@ The next step is to add a local-only configuration mechanism for ModelsLab:
 
 ## Troubleshooting
 
+### GitHub Actions page does not show the workflow
+
+Check that this file exists on `main`:
+
+```text
+.github/workflows/manual-android-build.yml
+```
+
+If the Actions tab is disabled, enable Actions in repository settings.
+
 ### Gradle sync cannot find version catalog
 
 Check that this file exists:
@@ -110,8 +158,4 @@ include(":app", ":core")
 
 ### JDK mismatch
 
-Set Android Studio Gradle JDK to JDK 17:
-
-```text
-Settings -> Build, Execution, Deployment -> Build Tools -> Gradle -> Gradle JDK
-```
+Set the local Gradle JDK to JDK 17 if building outside GitHub.
