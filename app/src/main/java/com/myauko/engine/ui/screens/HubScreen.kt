@@ -13,17 +13,45 @@ fun HubScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "Myauko Hub (Dynamic)",
-            style = MaterialTheme.typography.headlineMedium
+            text = "Myauko Engine",
+            style = MaterialTheme.typography.headlineLarge
         )
-        Spacer(modifier = Modifier.height(32.dp))
-        Button(onClick = { /* TODO: Navigate to direction selection */ }) {
-            Text("Select Direction")
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "WH4K — Modular Grimdark Erotic RPG",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(48.dp))
+
+        Button(
+            onClick = { navController.navigate("visit") },
+            modifier = Modifier.fillMaxWidth(0.7f)
+        ) {
+            Text("Начать визит в каюту", style = MaterialTheme.typography.titleMedium)
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedButton(
+            onClick = { /* TODO: Module selection */ },
+            modifier = Modifier.fillMaxWidth(0.7f)
+        ) {
+            Text("Выбрать модуль")
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text(
+            text = "Модуль: wh4k_myauko (v0.2)",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.outline
+        )
     }
 }
