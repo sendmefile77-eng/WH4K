@@ -1,0 +1,37 @@
+{
+  "id": "example.grimdark",
+  "name": "Example Grimdark Module",
+  "version": "0.1.0",
+  "minEngineVersion": "0.1.0",
+  "contentRating": "ADULT_ONLY",
+  "directions": [
+    {
+      "id": "citadel_gate",
+      "title": "Citadel Gate",
+      "description": "A cinematic entry point used to test the engine loop.",
+      "showcasePromptKey": "showcase.citadel_gate",
+      "visitScriptKey": "visit.citadel_gate"
+    }
+  ],
+  "banks": {
+    "characters": "banks/characters.json",
+    "locations": "banks/locations.json",
+    "atmospheres": "banks/atmospheres.json",
+    "frameTemplates": "banks/frames.json"
+  },
+  "promptPacks": [
+    "prompts/showcase.json",
+    "prompts/visit.json"
+  ],
+  "styleTags": [
+    "grimdark",
+    "cinematic",
+    "gothic architecture"
+  ],
+  "safety": {
+    "requiresAdultCharacters": true,
+    "disallowMinors": true,
+    "disallowRealPersonLikeness": true,
+    "disallowIllegalContent": true
+  }
+}
