@@ -8,7 +8,7 @@ composeBom = "2024.10.01"
 junit = "4.13.2"
 androidxJunit = "1.2.1"
 espressoCore = "3.6.1"
-serialization = "1.7.3"
+serialization = "1.6.3"
 ktor = "2.3.12"
 
 [libraries]
