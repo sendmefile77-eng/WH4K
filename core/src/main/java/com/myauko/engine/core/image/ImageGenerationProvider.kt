@@ -10,12 +10,13 @@ interface ImageGenerationProvider {
 @Serializable
 data class ImageGenerationRequest(
     val prompt: PromptResult,
-    val width: Int = 1024,
+    val width: Int = 768,
     val height: Int = 1024,
     val steps: Int = 28,
     val guidanceScale: Float = 7.0f,
-    val modelId: String = "nsfw-sdxl",
-    val safetyChecker: Boolean = false
+    val modelId: String? = null,
+    val safetyChecker: Boolean = false,
+    val allowAdultFictionalContent: Boolean = true
 )
 
 @Serializable
