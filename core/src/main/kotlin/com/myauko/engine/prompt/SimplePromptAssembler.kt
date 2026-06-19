@@ -58,7 +58,7 @@ class SimplePromptAssembler : PromptAssembler {
     }
 
     // Legacy method used by VisitManager
-    fun assembleForFrame(
+    override fun assembleForFrame(
         frame: Frame,
         visit: Visit,
         activeModule: Module,
