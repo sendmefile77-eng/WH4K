@@ -1,4 +1,10 @@
 {
-  "comment": "Основные промпт-шаблоны и правила сборки. Заполни реальным контентом.",
-  "templates": {}
+  "base_style": "grimdark WH40K erotic, sensual adult comic realism, detailed anatomy, gothic atmosphere",
+  "act_intros": {
+    "1": "The visit begins in the private cabin. Tension and anticipation fill the air.",
+    "2": "The situation escalates. Clothing becomes optional."
+  },
+  "frame_templates": {
+    "default": "{style}. {act_intro} {character} interacts with {player} in a {mood} way. Focus on {focus_area}."
+  }
 }
